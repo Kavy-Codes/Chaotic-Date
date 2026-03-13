@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#FF85A1"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>💕 Chaos Date</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="blob-bg"></div>
+
+<!-- ═══════════════ MENU SCREEN ════════════════════════════════ -->
+<div class="screen active" id="s-menu">
+  <div class="card">
+    <div class="logo">💕<br>Chaos Date</div>
+    <div class="tagline">the world's cutest LDR couples game</div>
+    <div class="hdiv">♡ ♡ ♡</div>
+    <div class="field"><label>Your name</label>
+      <input id="in-name" type="text" placeholder="What's your name?" maxlength="16" autocomplete="off"/></div>
+    <button class="btn primary" id="btn-create">🏠 Create a Room</button>
+    <div class="or-sep">— or join your partner —</div>
+    <div class="field"><label>Room code</label>
+      <input id="in-code" type="text" placeholder="ABCD" maxlength="4" class="code-in"/></div>
+    <button class="btn secondary" id="btn-join">✈️ Join Room</button>
+    <div class="err-msg" id="menu-err"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ GENDER / AVATAR SCREEN ═════════════════════ -->
+<div class="screen" id="s-gender">
+  <div class="card">
+    <div class="logo" style="font-size:1.9rem">Choose your look 🎀</div>
+    <div class="tagline">Pick your character style</div>
+    <div class="gender-grid">
+      <div class="gender-opt selected" data-g="girl">
+        <canvas id="av-girl" width="80" height="110"></canvas>
+        <div class="g-label">Girl 👧</div>
+      </div>
+      <div class="gender-opt" data-g="boy">
+        <canvas id="av-boy" width="80" height="110"></canvas>
+        <div class="g-label">Boy 👦</div>
+      </div>
+      <div class="gender-opt" data-g="enby">
+        <canvas id="av-enby" width="80" height="110"></canvas>
+        <div class="g-label">Non-binary 🌈</div>
+      </div>
+    </div>
+    <div class="tagline" style="margin-top:6px">Outfit colour</div>
+    <div class="color-pick-row" id="color-pick">
+      <div class="cpick sel" data-c="#FF85A1" style="background:#FF85A1"></div>
+      <div class="cpick" data-c="#85C1E9" style="background:#85C1E9"></div>
+      <div class="cpick" data-c="#72E480" style="background:#72E480"></div>
+      <div class="cpick" data-c="#C97EE8" style="background:#C97EE8"></div>
+      <div class="cpick" data-c="#FFD93D" style="background:#FFD93D"></div>
+      <div class="cpick" data-c="#FF7B54" style="background:#FF7B54"></div>
+      <div class="cpick" data-c="#60D0D0" style="background:#60D0D0"></div>
+    </div>
+    <button class="btn primary" id="btn-gender-ok" style="margin-top:18px">Let's go! 💕</button>
+    <button class="btn ghost" id="btn-gender-back">← Back</button>
+  </div>
+</div>
+
+<!-- ═══════════════ WAITING SCREEN ═════════════════════════════ -->
+<div class="screen" id="s-wait">
+  <div class="card">
+    <div class="logo" style="font-size:1.9rem">🔗 Room Ready!</div>
+    <p class="tagline">Share this code with your partner:</p>
+    <div class="big-code" id="disp-code">XXXX</div>
+    <button class="copy-btn" id="btn-copy">📋 Copy link</button>
+    <div class="wait-icon">🐾</div>
+    <p class="tagline" style="font-size:.85rem">Waiting for your partner to join…</p>
+    <button class="btn ghost" id="btn-wait-back">← Back</button>
+  </div>
+</div>
+
+<!-- ═══════════════ GAME SCREEN ════════════════════════════════ -->
+<div class="screen" id="s-game">
+  <canvas id="gc"></canvas>
+</div>
+
+<!-- ═══════════════ HUD ══════════════════════════════════════════ -->
+<div id="hud" style="display:none">
+  <div id="hud-bar">
+    <div class="hud-pill" id="hud-room">💕 <span id="hud-code">----</span></div>
+    <div id="hud-mid">
+      <div id="love-wrap">
+        <span id="love-icon">💕</span>
+        <div id="love-bar-bg"><div id="love-bar-fill"></div></div>
+        <span id="love-pct">0%</span>
+      </div>
+    </div>
+    <div class="hud-pill urgent" id="hud-timer">⏰ <span id="timer-txt">60s</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════ SIDE REACTIONS ══════════════════════════════ -->
+<div id="side-reacts" style="display:none">
+  <button class="rb" data-e="💕">💕</button>
+  <button class="rb" data-e="😂">😂</button>
+  <button class="rb" data-e="🎉">🎉</button>
+  <button class="rb" data-e="😍">😍</button>
+  <button class="rb" data-e="💋">💋</button>
+  <button class="rb" data-e="🤗">🤗</button>
+  <button class="rb" data-e="✨">✨</button>
+  <button class="rb" data-e="👋">👋</button>
+</div>
+
+<!-- ═══════════════ BOTTOM TOOLBAR ══════════════════════════════ -->
+<div id="toolbar" style="display:none">
+  <button class="tb-btn" id="tb-chat">💬</button>
+  <button class="tb-btn" id="tb-note">📝</button>
+  <button class="tb-btn" id="tb-pet">🐾</button>
+  <button class="tb-btn" id="tb-hug">🤗</button>
+</div>
+
+<!-- ═══════════════ TOUCH JOYSTICK ══════════════════════════════ -->
+<div id="joystick" style="display:none">
+  <div id="joy-base"></div>
+  <div id="joy-knob"></div>
+</div>
+
+<!-- ═══════════════ CHAT OVERLAY ════════════════════════════════ -->
+<div id="chat-ov" class="ov-bg">
+  <div class="ov-close" id="chat-close"></div>
+  <div class="chat-box">
+    <input id="chat-in" type="text" placeholder="Say something sweet 💕" maxlength="130"/>
+    <button id="chat-send">Send 💌</button>
+  </div>
+</div>
+
+<!-- ═══════════════ NOTE OVERLAY ════════════════════════════════ -->
+<div id="note-ov" class="ov-bg">
+  <div class="ov-close" id="note-close"></div>
+  <div class="note-box">
+    <h3>📝 Leave a sticky note</h3>
+    <textarea id="note-ta" placeholder="Write something lovely… 💌" maxlength="100"></textarea>
+    <div class="note-btns">
+      <button class="btn primary btn-sm" id="note-ok">Pin it 📌</button>
+      <button class="btn ghost btn-sm" id="note-x">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PET PANEL ════════════════════════════════════ -->
+<div id="pet-ov" class="ov-bg">
+  <div class="ov-close" id="pet-close"></div>
+  <div class="note-box" style="text-align:center">
+    <h3>🐾 Your pet</h3>
+    <canvas id="pet-preview" width="100" height="120" style="display:block;margin:8px auto"></canvas>
+    <div style="font-size:.85rem;color:var(--sub);font-weight:700;margin:4px 0">Happiness</div>
+    <div id="pet-hap-bar"><div id="pet-hap-fill"></div></div>
+    <div class="note-btns" style="margin-top:12px">
+      <button class="btn primary btn-sm" id="btn-pet-pet">Pet it! 🐾</button>
+      <button class="btn secondary btn-sm" id="btn-pet-rename">Rename ✏️</button>
+    </div>
+    <div id="rename-wrap" style="display:none;margin-top:10px">
+      <input id="rename-in" type="text" placeholder="New name…" maxlength="16" style="width:100%;padding:8px 12px;border-radius:20px;border:2px solid var(--pink);font-family:var(--font);font-size:.9rem;outline:none"/>
+      <button class="btn primary btn-sm" id="btn-rename-ok" style="margin-top:8px;width:100%">Rename 💕</button>
+    </div>
+    <button class="btn ghost btn-sm" id="pet-x" style="margin-top:8px">Close</button>
+  </div>
+</div>
+
+<!-- ═══════════════ DRAW TOOLBAR ════════════════════════════════ -->
+<div id="draw-bar" style="display:none">
+  <div class="db-swatches">
+    <div class="dsw sel" data-c="#222222" style="background:#222"></div>
+    <div class="dsw" data-c="#FF5C8A" style="background:#FF5C8A"></div>
+    <div class="dsw" data-c="#3EA9E0" style="background:#3EA9E0"></div>
+    <div class="dsw" data-c="#2ECC71" style="background:#2ECC71"></div>
+    <div class="dsw" data-c="#E67E22" style="background:#E67E22"></div>
+    <div class="dsw" data-c="#9B59B6" style="background:#9B59B6"></div>
+    <div class="dsw" data-c="#FFFFFF" style="background:#fff;border:2px solid #ddd"></div>
+  </div>
+  <input id="draw-sz" type="range" min="2" max="28" value="5"/>
+  <button id="draw-clear" class="db-btn">🗑</button>
+</div>
+
+<!-- ═══════════════ GUESS INPUT ══════════════════════════════════ -->
+<div id="guess-bar" style="display:none">
+  <input id="guess-in" type="text" placeholder="Type your guess…" maxlength="30" autocomplete="off"/>
+  <button id="guess-send">Guess!</button>
+</div>
+
+<!-- ═══════════════ QUIZ UI ══════════════════════════════════════ -->
+<div id="quiz-ui" style="display:none">
+  <div id="quiz-card">
+    <div id="quiz-prog"></div>
+    <div id="quiz-q-text"></div>
+    <div id="quiz-opts"></div>
+    <div id="quiz-wait" style="display:none">⏳ Waiting for partner…</div>
+  </div>
+</div>
+
+<!-- ═══════════════ COUNTDOWN ════════════════════════════════════ -->
+<div id="countdown" style="display:none">
+  <div class="cd-badge">
+    <div id="cd-name"></div>
+    <div id="cd-num">3</div>
+  </div>
+</div>
+
+<!-- ═══════════════ RESULTS ══════════════════════════════════════ -->
+<div id="results" style="display:none">
+  <div class="res-card">
+    <div id="res-title">🏆</div>
+    <div id="res-winner"></div>
+    <div id="res-scores"></div>
+    <div id="res-love"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOAST ════════════════════════════════════════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════ MG CANVAS OVERLAY ═══════════════════════════ -->
+<canvas id="mgc" style="display:none;position:fixed;top:0;left:0;z-index:20;pointer-events:none"></canvas>
+<!-- separate interactive overlay for tap-based MGs -->
+<div id="mg-tap" style="display:none;position:fixed;top:0;left:0;z-index:21;touch-action:none"></div>
+
+<script src="game.js"></script>
+</body>
+</html>
